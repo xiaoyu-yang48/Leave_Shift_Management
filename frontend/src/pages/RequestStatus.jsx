@@ -25,7 +25,7 @@ const RequestStatus = () => {
 
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [cancelingRequestId, setCancellingRequestId] = useState(null);
+    const [cancelingRequestId, setCancelingRequestId] = useState(null);
 
 //     useEffect(() => {
 //         const fetchRequests = async () => {
@@ -63,17 +63,17 @@ const RequestStatus = () => {
 
 
         try {
-            setCancellingRequestId(request.id);
-            // const response = await axiosInstance.post(`/api/requests/${request.id}/cancel`, {}, {
+            setCancelingRequestId(req.id);
+            // const response = await axiosInstance.post(`/api/requests/${req.id}/cancel`, {}, {
             //     headers: { Authorization: `Bearer ${user.token}` },
             // });
             // alert('Request canceled successfully');
-            setRequests(prev => prev.map(r => r.id === request.id ? {...r, status: 'Canceled'} : r));
-            console.log(`Request ${request.id} canceled successfully`);
+            setRequests(prev => prev.map(r => r.id === req.id ? {...r, status: 'Canceled'} : r));
+            console.log(`Request ${req.id} canceled successfully`);
         } catch (error) {
             alert('Failed to cancel request.');
         } finally {
-            setCancellingRequestId(null);
+            setCancelingRequestId(null);
         }
     };
 
@@ -82,11 +82,11 @@ const RequestStatus = () => {
     return (
         <div className="container mx-auto p-6">
             <h1 className="text-2xl font-bold mb-4">My Requests</h1>
-            <table className="min-w-full bg-white">
+            <table className="min-w-full bg-white text-center">
                 <thead>
                     <tr>
                         <th className="py-2 px-4 border-b">Type</th>
-                        <th className="py-2 px-4 border-b">Date</th>
+                        <th className="py-2 px-4 border-b">Request Date</th>
                         <th className="py-2 px-4 border-b">Status</th>
                         <th className="py-2 px-4 border-b">Actions</th>
                     </tr>
@@ -102,7 +102,7 @@ const RequestStatus = () => {
                             <td className="py-2 px-4 border-b">
                                 {request.status === 'Pending' && (
                                     <button
-                                        className="text-red-500 hover:text-red-700"
+                                        className="bg-blue-500 text-white py-2 px-4 border-b hover:scale-105 transition-transform"
                                         onClick={() => handleCancelRequest(request)}
                                     >
                                         Cancel
