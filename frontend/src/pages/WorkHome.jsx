@@ -10,36 +10,27 @@ const WorkHome = () => {
     const [schedule, setSchedule] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // useEffect(() => {
-    //     const fetchSchedule = async () => {
-    //         try {
-    //             const response = await axiosInstance.get(`/api/schedule/${user.id}`);
-    //             setSchedule(response.data);
-    //         } catch (error) {
-    //             console.error('Error fetching schedule:', error);
-    //             alert('Failed to load schedule. Please try again later.');
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchSchedule();
-    // }, [user.id]);
-
-    // frontend test only
     useEffect(() => {
-        setSchedule([
-            { id: 1, date: '2023-10-01', type: 'Morning' },
-            { id: 2, date: '2023-10-02', type: 'Afternoon' },
-            { id: 3, date: '2023-10-03', type: 'Afternoon' },
-        ]);
-        setLoading(false);
-    }, []);
+        if (!user) return;
+        const fetchSchedule = async () => {
+            try {
+                const response = await axiosInstance.get(`/api/shifts/my`);
+                setSchedule(response.data.map(s => ({ id: s._id, date: s.date?.slice(0,10), type: s.shiftType })));
+            } catch (error) {
+                console.error('Error fetching schedule:', error);
+                alert('Failed to load schedule. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSchedule();
+    }, [user]);
 
     return (
         <>
         <div className="container mx-auto mt-10">
-            <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}</h1>
+            <h1 className="text-2xl font-bold mb-4">Welcome, {user?.name}</h1>
             <p className="mb-4">Here is your work schedule:</p>
             {loading ? (
                 <p>Loading...</p>

@@ -20,18 +20,16 @@ const Navbar = () => {
           {/* admin login */}
           {user.role === 'admin' ? (
             <>
-            <Link to="/admin_home" className="mr-4">Home</Link>
-            <Link to="/admin_shift" className="mr-4">Shift</Link>
-            <Link to="/admin_leave" className="mr-4">Leave&Overtime</Link>
-            <Link to="/admin_overtime" className="mr-4">Request Center</Link>
+            <Link to="/admin_home" className="mr-4">Request Center</Link>
+            <Link to="/admin_shift" className="mr-4">Shifts</Link>
             </>
           ) : (
             // employee login
             <>
             <Link to="/home" className="mr-4">Home</Link>
-            <Link to="/shiftswap" className="mr-4">Payslip</Link>
             <Link to="/leave" className="mr-4">Leave</Link>
-            <Link to="/overtime" className="mr-4">Request Status</Link>
+            <Link to="/overtime" className="mr-4">Overtime</Link>
+            <Link to="/request_status" className="mr-4">My Requests</Link>
             </>
           )}
 

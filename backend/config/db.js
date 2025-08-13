@@ -1,13 +1,21 @@
 // config/db.js
 const mongoose = require("mongoose");
 
-// Set strictQuery explicitly to suppress the warning
-//mongoose.set('strictQuery', true);
+let memoryServer = null;
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);  // Remove deprecated options
-    console.log("MongoDB connected successfully");
+    const mongoUri = process.env.MONGO_URI;
+    if (!mongoUri || mongoUri.includes('<YOUR')) {
+      const { MongoMemoryServer } = require('mongodb-memory-server');
+      memoryServer = await MongoMemoryServer.create();
+      const memUri = memoryServer.getUri();
+      await mongoose.connect(memUri);
+      console.log("MongoDB (in-memory) connected successfully");
+    } else {
+      await mongoose.connect(mongoUri);
+      console.log("MongoDB connected successfully");
+    }
   } catch (error) {
     console.error("MongoDB connection error:", error.message);
     process.exit(1);
