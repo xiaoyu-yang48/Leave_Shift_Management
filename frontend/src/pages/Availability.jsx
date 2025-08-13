@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axiosInstance from '../axiosConfig';
 
 function getDaysInMonth(year, monthZero) {
@@ -13,45 +13,34 @@ function formatYYYYMMDD(year, monthZero, day) {
 
 const Availability = () => {
   const today = new Date();
-  const [year, setYear] = useState(today.getUTCFullYear());
-  const [monthZero, setMonthZero] = useState(today.getUTCMonth());
+  const year = today.getUTCFullYear();
+  const monthZero = today.getUTCMonth();
+
   const [loading, setLoading] = useState(false);
   const [availabilityMap, setAvailabilityMap] = useState({}); // { 'YYYY-MM-DD': true/false }
 
-  const monthLabel = useMemo(() => new Date(Date.UTC(year, monthZero, 1)).toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }), [year, monthZero]);
+  const monthLabel = new Date(Date.UTC(year, monthZero, 1)).toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
   const numDays = getDaysInMonth(year, monthZero);
-  const from = formatYYYYMMDD(year, monthZero, 1);
-  const to = formatYYYYMMDD(year, monthZero, numDays);
-
-  const fetchAvailability = async () => {
-    setLoading(true);
-    try {
-      const res = await axiosInstance.get(`/api/availability/my`, { params: { from, to } });
-      const map = {};
-      for (const item of res.data) {
-        map[item.date] = !!item.available;
-      }
-      setAvailabilityMap(map);
-    } catch (e) {
-      alert('Failed to load availability');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchAvailability();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [year, monthZero]);
+    const fetchAvailability = async () => {
+      setLoading(true);
+      try {
+        const res = await axiosInstance.get(`/api/availability/my`);
+        const map = {};
+        for (const item of res.data) {
+          map[item.date] = !!item.available;
+        }
+        setAvailabilityMap(map);
+      } catch (e) {
+        alert('Failed to load availability');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const changeMonth = (delta) => {
-    let m = monthZero + delta;
-    let y = year;
-    if (m < 0) { m = 11; y -= 1; }
-    if (m > 11) { m = 0; y += 1; }
-    setYear(y);
-    setMonthZero(m);
-  };
+    fetchAvailability();
+  }, []);
 
   const toggleDay = async (day) => {
     const date = formatYYYYMMDD(year, monthZero, day);
@@ -68,7 +57,7 @@ const Availability = () => {
   const rows = [];
   for (let i = 1; i <= numDays; i++) {
     const date = formatYYYYMMDD(year, monthZero, i);
-    const available = availabilityMap[date] ?? true;
+    const available = availabilityMap[date] ?? true; // default to Available when no record exists
     rows.push(
       <tr key={date}>
         <td className="py-2 px-4 border-b text-center">{date}</td>
@@ -91,9 +80,7 @@ const Availability = () => {
       <h1 className="text-2xl font-bold mb-4">My Availability</h1>
 
       <div className="flex items-center gap-4 mb-4">
-        <button className="bg-gray-200 px-3 py-1" onClick={() => changeMonth(-1)}>&lt; Prev</button>
         <div className="font-semibold">{monthLabel}</div>
-        <button className="bg-gray-200 px-3 py-1" onClick={() => changeMonth(1)}>Next &gt;</button>
         {loading && <span className="ml-4 text-gray-500">Loading...</span>}
       </div>
 
