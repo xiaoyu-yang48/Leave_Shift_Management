@@ -10,6 +10,7 @@ import ShiftSwap from './pages/ShiftSwap';
 import Leave from './pages/Leave';
 import Overtime from './pages/Overtime';
 import RequestStatus from './pages/RequestStatus';
+import Availability from './pages/Availability';
 
 import AdminHome from './pages/AdminHome';
 import AdminShift from './pages/AdminShift';
@@ -27,6 +28,7 @@ function App() {
         <Route path="/tasks" element={<Tasks />} />
         {/* employee pages */}
         <Route path="/home" element={<WorkHome />} />
+        <Route path="/availability" element={<Availability />} />
         <Route path="/shiftswap/:shiftId" element={<ShiftSwap />} />
         <Route path="/leave" element={<Leave />} />
         <Route path="/overtime" element={<Overtime />} />

@@ -27,6 +27,7 @@ const Navbar = () => {
             // employee login
             <>
             <Link to="/home" className="mr-4">Home</Link>
+            <Link to="/availability" className="mr-4">Availability</Link>
             <Link to="/leave" className="mr-4">Leave</Link>
             <Link to="/overtime" className="mr-4">Overtime</Link>
             <Link to="/request_status" className="mr-4">My Requests</Link>
