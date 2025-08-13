@@ -46,7 +46,4 @@ const Login = () => {
 };
 
 export default Login;
-// commit for existing functionality in template
-// commit for existing functionality in template
-// commit for existing functionality in template
 
