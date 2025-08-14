@@ -13,35 +13,40 @@ const ShiftSwap = () => {
     const [selectedTargetShift, setSelectedTargetShift] = useState('');
     const [loading, setLoading] = useState(true);
 
-    // useEffect(() => {
-    //     const fetchShifts = async () => {
-    //         try {
-    //             const response = await axiosInstance.get(`/api/shifts/${user.id}`);
-    //             setShifts(response.data);
-    //         } catch (error) {
-    //             console.error('Error fetching shifts:', error);
-    //             alert('Failed to load shifts. Please try again later.');
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchShifts();
-    // }, [user.id]);
-
-    // frontend test only
     useEffect(() => {
-        setMyShift(
-            { id: shiftId, date: '2023-10-01', type: 'Morning' },
-        );
+        const fetchShifts = async () => {
+            try {
+                const [scheduleResponse, availableResponse] = await Promise.all([
+                    axiosInstance.get(`/api/schedule/me`), {params: {userId: user.id}},
+                    axiosInstance.get(`/api/shifts/availableswap/${shiftId}`),
+                ]);
+                const myShiftData = scheduleResponse.data.find(shift => shift.id === String(shiftId));
+                setMyShift(myShiftData|| null);
+                setAvailableShifts(availableResponse.data || []);
+            } catch (error) {
+                console.error('Error fetching shifts:', error); 
+                alert('Failed to load shifts. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        setAvailableShifts([
-            { id: 200, employeeId: 2, employeeName: 'Alice' , date: '2023-10-02', type: 'Afternoon' },
-            { id: 201, employeeId: 3, employeeName: 'Bob' , date: '2023-10-03', type: 'Morning' },
-            { id: 202, employeeId: 4, employeeName: 'Charlie' , date: '2023-10-04', type: 'Afternoon' },
-        ]);
-        setLoading(false);
+        fetchShifts();
     }, [shiftId]);
+
+    // // frontend test only
+    // useEffect(() => {
+    //     setMyShift(
+    //         { id: shiftId, date: '2023-10-01', type: 'Morning' },
+    //     );
+
+    //     setAvailableShifts([
+    //         { id: 200, employeeId: 2, employeeName: 'Alice' , date: '2023-10-02', type: 'Afternoon' },
+    //         { id: 201, employeeId: 3, employeeName: 'Bob' , date: '2023-10-03', type: 'Morning' },
+    //         { id: 202, employeeId: 4, employeeName: 'Charlie' , date: '2023-10-04', type: 'Afternoon' },
+    //     ]);
+    //     setLoading(false);
+    // }, [shiftId]);
 
     const handleSwap = async (e) => {
         e.preventDefault();
@@ -55,7 +60,12 @@ const ShiftSwap = () => {
             //     shiftId,
             //     targetShiftId: selectedTargetShift,
             // });
-            // alert('Swap request submitted');
+            await axiosInstance.post(`/api/shifts/swap`, {
+                userId: user.id,
+                shiftId,
+                targetShiftId: selectedTargetShift,
+            });
+            alert('Swap request submitted');
             console.log(`Shift ${shiftId} swap request with target shift ${selectedTargetShift}`);
             alert('Swap request sent successfully!');
             navigate('/request_status');
