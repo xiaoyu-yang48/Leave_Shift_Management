@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, use} from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
@@ -13,26 +13,21 @@ const ShiftSwap = () => {
     const [selectedTargetShift, setSelectedTargetShift] = useState('');
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchShifts = async () => {
-            try {
-                const [scheduleResponse, availableResponse] = await Promise.all([
-                    axiosInstance.get(`/api/schedule/me`), {params: {userId: user.id}},
-                    axiosInstance.get(`/api/shifts/availableswap/${shiftId}`),
-                ]);
-                const myShiftData = scheduleResponse.data.find(shift => shift.id === String(shiftId));
-                setMyShift(myShiftData|| null);
-                setAvailableShifts(availableResponse.data || []);
-            } catch (error) {
-                console.error('Error fetching shifts:', error); 
-                alert('Failed to load shifts. Please try again later.');
-            } finally {
-                setLoading(false);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchShifts = async () => {
+    //         try {
+    //             const response = await axiosInstance.get(`/api/shifts/${user.id}`);
+    //             setShifts(response.data);
+    //         } catch (error) {
+    //             console.error('Error fetching shifts:', error);
+    //             alert('Failed to load shifts. Please try again later.');
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
 
-        fetchShifts();
-    }, [shiftId]);
+    //     fetchShifts();
+    // }, [user.id]);
 
     // // frontend test only
     // useEffect(() => {
@@ -48,6 +43,26 @@ const ShiftSwap = () => {
     //     setLoading(false);
     // }, [shiftId]);
 
+    useEffect(() => {
+        const loadShiftData = async () => {
+            try {
+                const [scheduleResponse, availableResponse] = await Promise.all([
+                    axiosInstance.get(`/api/schedule/me`, { params: { userId: user.id } }),
+                    axiosInstance.get(`/api/schedule/availableswaps/me/${shiftId}`),
+                ]);
+                const myShiftData = scheduleResponse.data.find(shift => String(shift.id) === String(shiftId));
+                setMyShift(myShiftData||null);
+                setAvailableShifts(availableResponse.data || []);
+            } catch (error) {
+                console.error('Error loading shift data:', error);
+                alert('Failed to load shift data. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadShiftData();
+    }, [shiftId]);
+
     const handleSwap = async (e) => {
         e.preventDefault();
         if (!selectedTargetShift) {
@@ -60,13 +75,12 @@ const ShiftSwap = () => {
             //     shiftId,
             //     targetShiftId: selectedTargetShift,
             // });
-            await axiosInstance.post(`/api/shifts/swap`, {
+            // alert('Swap request submitted');
+            await axiosInstance.post(`/api/schedule/swap`, {
                 userId: user.id,
-                shiftId,
+                myShiftId: myShift.id,
                 targetShiftId: selectedTargetShift,
             });
-            alert('Swap request submitted');
-            console.log(`Shift ${shiftId} swap request with target shift ${selectedTargetShift}`);
             alert('Swap request sent successfully!');
             navigate('/request_status');
         } catch (error) {
