@@ -7,8 +7,8 @@ const router = express.Router();
 // Get availability for the current user filtered by year and month (defaults to current month)
 router.get('/me', protect, async (req, res) => {
   try {
-    const userId = String(req.user.id);
-    let { year, month } = req.query; // month: 1-12
+    const userId = String(req.user?.id);
+    let { year, month } = req.query;
 
     // Default to current month if not provided
     if (!year || !month) {
@@ -18,11 +18,11 @@ router.get('/me', protect, async (req, res) => {
     }
 
     const mm = String(month).padStart(2, '0');
-    const prefix = `${year}-${mm}-`;
+    const prefix = `${year}-${mm}`;
 
     const docs = await Availability.find(
-      { userId, date: { $regex: `^${prefix}` } },
-      { _id: 0, userId: 0, createdAt: 0, updatedAt: 0, __v: 0 }
+      { userId, date: { $regex: `^${prefix}-` } },
+      { _id: 0, date: 1, available: 1 }
     ).lean();
 
     res.json(docs);
@@ -48,17 +48,17 @@ router.post('/save', protect, async (req, res) => {
       available: !!row.available,
     }));
 
-    await Promise.all(
-      updates.map(u =>
-        Availability.updateOne(
-          { userId, date: u.date },
-          { $set: u },
-          { upsert: true }
-        )
-      )
+    await Availability.bulkWrite(
+      updates.map(update => ({
+        updateOne: {
+          filter: { userId, date: update.date },
+          update: { $set: { available: update.available }, $setOnInsert: { userId, date: update.date } },
+          upsert: true,
+        }
+      }))
     );
 
-    res.json({ message: 'Availability saved' });
+    res.json({ message: 'Availability updated successfully' });
   } catch (error) {
     console.error('Error saving availability:', error);
     res.status(500).json({ message: 'Server error' });
