@@ -23,8 +23,8 @@ const WorkHome = () => {
             }
         };
 
-        fetchSchedule();
-    }, [user.id]);
+        if (user) fetchSchedule();
+    }, [user?.id]);
 
     // frontend test only
     // useEffect(() => {

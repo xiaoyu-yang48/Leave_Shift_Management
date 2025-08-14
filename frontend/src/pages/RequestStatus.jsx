@@ -27,33 +27,23 @@ const RequestStatus = () => {
     const [loading, setLoading] = useState(true);
     const [cancelingRequestId, setCancelingRequestId] = useState(null);
 
-//     useEffect(() => {
-//         const fetchRequests = async () => {
-//             try {
-//                 const response = await axiosInstance.get('/api/requests', {
-//                     headers: { Authorization: `Bearer ${user.token}` },
-//                 });
-//                 setRequests(response.data);
-//             } catch (error) {
-//                 alert('Failed to fetch requests.');
-//             } finally {
-//                 setLoading(false);
-//             }
-//         };
-
-//         fetchRequests();
-//     }, [user]);
-
-
-    // frontend test only
     useEffect(() => {
-        setRequests([
-            { id: 'r001', type: 'Leave', status: 'Pending', date: '2023-10-01' },
-            { id: 'r002', type: 'Overtime', status: 'Approved', date: '2023-10-02' },
-            { id: 'r003', type: 'Shift Swap', status: 'Rejected', date: '2023-10-03' },
-        ]);
-        setLoading(false);
-    }, []);
+        const fetchRequests = async () => {
+            try {
+                const response = await axiosInstance.get('/api/requests/me');
+                setRequests(response.data);
+            } catch (error) {
+                alert('Failed to fetch requests.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRequests();
+    }, [user]);
+
+
+
 
 
     const handleCancelRequest = async (req) => {
@@ -64,12 +54,8 @@ const RequestStatus = () => {
 
         try {
             setCancelingRequestId(req.id);
-            // const response = await axiosInstance.post(`/api/requests/${req.id}/cancel`, {}, {
-            //     headers: { Authorization: `Bearer ${user.token}` },
-            // });
-            // alert('Request canceled successfully');
+            await axiosInstance.post(`/api/requests/${req.id}/cancel`);
             setRequests(prev => prev.map(r => r.id === req.id ? {...r, status: 'Canceled'} : r));
-            console.log(`Request ${req.id} canceled successfully`);
         } catch (error) {
             alert('Failed to cancel request.');
         } finally {

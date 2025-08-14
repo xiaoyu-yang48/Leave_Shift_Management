@@ -29,18 +29,24 @@ const ShiftSwap = () => {
     //     fetchShifts();
     // }, [user.id]);
 
-    // frontend test only
     useEffect(() => {
-        setMyShift(
-            { id: shiftId, date: '2023-10-01', type: 'Morning' },
-        );
-
-        setAvailableShifts([
-            { id: 200, employeeId: 2, employeeName: 'Alice' , date: '2023-10-02', type: 'Afternoon' },
-            { id: 201, employeeId: 3, employeeName: 'Bob' , date: '2023-10-03', type: 'Morning' },
-            { id: 202, employeeId: 4, employeeName: 'Charlie' , date: '2023-10-04', type: 'Afternoon' },
-        ]);
-        setLoading(false);
+        const load = async () => {
+            try {
+                const [scheduleRes, optionsRes] = await Promise.all([
+                    axiosInstance.get('/api/schedule/me'),
+                    axiosInstance.get(`/api/schedule/available-swaps/${shiftId}`),
+                ]);
+                const mine = scheduleRes.data.find(s => String(s.id) === String(shiftId));
+                setMyShift(mine || null);
+                setAvailableShifts(optionsRes.data || []);
+            } catch (e) {
+                console.error(e);
+                alert('Failed to load swap options');
+            } finally {
+                setLoading(false);
+            }
+        };
+        load();
     }, [shiftId]);
 
     const handleSwap = async (e) => {
@@ -51,12 +57,10 @@ const ShiftSwap = () => {
         }
 
         try {
-            // const response = await axiosInstance.post(`/api/shifts/swap`, {
-            //     shiftId,
-            //     targetShiftId: selectedTargetShift,
-            // });
-            // alert('Swap request submitted');
-            console.log(`Shift ${shiftId} swap request with target shift ${selectedTargetShift}`);
+            await axiosInstance.post(`/api/requests/swap`, {
+                shiftId,
+                targetShiftId: selectedTargetShift,
+            });
             alert('Swap request sent successfully!');
             navigate('/request_status');
         } catch (error) {
