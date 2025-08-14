@@ -1,13 +1,14 @@
 const express = require('express');
 const Availability = require('../models/Availability');
-const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
 // Get availability for the current user filtered by year and month (defaults to current month)
-router.get('/me', protect, async (req, res) => {
+router.get('/me', async (req, res) => {
   try {
-    const userId = String(req.user?.id);
+    const userId = String(req.query.userId || '');
+    if (!userId) return res.status(400).json({ message: 'userId is required' });
+
     let { year, month } = req.query;
 
     // Default to current month if not provided
@@ -33,9 +34,11 @@ router.get('/me', protect, async (req, res) => {
 });
 
 // Save availability for current user (expects array of { date, available })
-router.post('/save', protect, async (req, res) => {
+router.post('/save', async (req, res) => {
   try {
-    const userId = String(req.user?.id);
+    const userId = String(req.query.userId || '');
+    if (!userId) return res.status(400).json({ message: 'userId is required' });
+
     const rows = Array.isArray(req.body) ? req.body : [];
 
     if (!rows.length) {

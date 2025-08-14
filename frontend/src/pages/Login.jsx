@@ -12,10 +12,8 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axiosInstance.post('/api/auth/login', formData);
-      // store token only in localStorage; context stores user fields
-      if (response.data?.token) localStorage.setItem('token', response.data.token);
-      const { token, ...userOnly } = response.data || {};
-      login(userOnly);
+      const { id, name, email } = response.data || {};
+      login({ id, name, email });
       navigate('/home');
     } catch (error) {
       alert('Login failed. Please try again.');

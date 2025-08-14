@@ -30,7 +30,7 @@ const RequestStatus = () => {
     useEffect(() => {
         const fetchRequests = async () => {
             try {
-                const response = await axiosInstance.get('/api/requests/me');
+                const response = await axiosInstance.get('/api/requests/me', { params: { userId: user.id } });
                 setRequests(response.data);
             } catch (error) {
                 alert('Failed to fetch requests.');
@@ -54,7 +54,7 @@ const RequestStatus = () => {
 
         try {
             setCancelingRequestId(req.id);
-            await axiosInstance.post(`/api/requests/${req.id}/cancel`);
+            await axiosInstance.post(`/api/requests/${req.id}/cancel`, {}, { params: { userId: user.id } });
             setRequests(prev => prev.map(r => r.id === req.id ? {...r, status: 'Canceled'} : r));
         } catch (error) {
             alert('Failed to cancel request.');

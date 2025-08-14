@@ -1,14 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Request = require('../models/Request');
-const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// List my requests
-router.get('/me', protect, async (req, res) => {
+// List my requests (userId via query)
+router.get('/me', async (req, res) => {
   try {
-    const userId = String(req.user.id);
+    const userId = String(req.query.userId || '');
+    if (!userId) return res.status(400).json({ message: 'userId is required' });
+
     const docs = await Request.find({ userId }).sort({ createdAt: -1 }).lean();
     const result = docs.map(d => ({ id: String(d._id), type: mapType(d.type), status: d.status, date: d.createdAt }));
     res.json(result);
@@ -27,13 +28,15 @@ function mapType(type) {
   }
 }
 
-// Cancel own pending request
-router.post('/:id/cancel', protect, async (req, res) => {
+// Cancel own pending request (userId via query)
+router.post('/:id/cancel', async (req, res) => {
   try {
+    const userId = String(req.query.userId || '');
     const { id } = req.params;
+    if (!userId) return res.status(400).json({ message: 'userId is required' });
     if (!mongoose.isValidObjectId(id)) return res.status(400).json({ message: 'Invalid request ID' });
 
-    const request = await Request.findOne({ _id: id, userId: req.user.id });
+    const request = await Request.findOne({ _id: id, userId });
     if (!request) return res.status(404).json({ message: 'Request not found' });
     if (request.status !== 'Pending') return res.status(400).json({ message: 'Only pending requests can be canceled' });
 
@@ -46,14 +49,15 @@ router.post('/:id/cancel', protect, async (req, res) => {
   }
 });
 
-// Submit leave request
-router.post('/leave', protect, async (req, res) => {
+// Submit leave request (userId in body)
+router.post('/leave', async (req, res) => {
   try {
-    const { startDate, endDate, reason } = req.body;
+    const { userId, startDate, endDate, reason } = req.body;
+    if (!userId) return res.status(400).json({ message: 'userId is required' });
     if (!startDate || !endDate) return res.status(400).json({ message: 'Missing start or end date' });
 
     const doc = await Request.create({
-      userId: req.user.id,
+      userId,
       type: 'leave',
       details: { startDate, endDate, reason },
     });
@@ -64,14 +68,15 @@ router.post('/leave', protect, async (req, res) => {
   }
 });
 
-// Submit overtime request
-router.post('/overtime', protect, async (req, res) => {
+// Submit overtime request (userId in body)
+router.post('/overtime', async (req, res) => {
   try {
-    const { shiftId, hours, reason } = req.body;
+    const { userId, shiftId, hours, reason } = req.body;
+    if (!userId) return res.status(400).json({ message: 'userId is required' });
     if (!shiftId || !hours) return res.status(400).json({ message: 'Missing shiftId or hours' });
 
     const doc = await Request.create({
-      userId: req.user.id,
+      userId,
       type: 'overtime',
       details: { shiftId, hours, reason },
     });
@@ -82,14 +87,15 @@ router.post('/overtime', protect, async (req, res) => {
   }
 });
 
-// Submit shift swap request
-router.post('/swap', protect, async (req, res) => {
+// Submit shift swap request (userId in body)
+router.post('/swap', async (req, res) => {
   try {
-    const { shiftId, targetShiftId } = req.body;
+    const { userId, shiftId, targetShiftId } = req.body;
+    if (!userId) return res.status(400).json({ message: 'userId is required' });
     if (!shiftId || !targetShiftId) return res.status(400).json({ message: 'Missing shiftId or targetShiftId' });
 
     const doc = await Request.create({
-      userId: req.user.id,
+      userId,
       type: 'swap',
       details: { shiftId, targetShiftId },
     });

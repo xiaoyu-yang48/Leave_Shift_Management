@@ -31,7 +31,7 @@ const Availability = () => {
             setLoading(true);
             try {
                 const response = await axiosInstance.get(`/api/availability/me`, {
-                    params: { year, month: monthZero + 1 },
+                    params: { userId: user.id, year, month: monthZero + 1 },
                 });
                 setAvailability(response.data);
             } catch (error) {
@@ -67,7 +67,7 @@ const Availability = () => {
     const handleSave = async () => {
         setSaving(true);
         try {
-            await axiosInstance.post('/api/availability/save', rows);
+            await axiosInstance.post(`/api/availability/save`, rows, { params: { userId: user.id } });
             alert('Availability saved successfully!');
         } catch (error) {
             console.error('Error saving availability:', error);

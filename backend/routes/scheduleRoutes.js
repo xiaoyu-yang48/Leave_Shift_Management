@@ -1,14 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Schedule = require('../models/Schedule');
-const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Get current user's schedule
-router.get('/me', protect, async (req, res) => {
+// Get current user's schedule (userId via query)
+router.get('/me', async (req, res) => {
   try {
-    const userId = String(req.user.id);
+    const userId = String(req.query.userId || '');
+    if (!userId) return res.status(400).json({ message: 'userId is required' });
+
     const docs = await Schedule.find({ userId }, { _id: 1, date: 1, type: 1 }).lean();
     const schedule = docs.map(doc => ({ id: String(doc._id), date: doc.date, type: doc.type }));
     res.json(schedule);
@@ -19,7 +20,7 @@ router.get('/me', protect, async (req, res) => {
 });
 
 // Find available swap options for a given shift
-router.get('/available-swaps/:shiftId', protect, async (req, res) => {
+router.get('/available-swaps/:shiftId', async (req, res) => {
   try {
     const { shiftId } = req.params;
     if (!mongoose.isValidObjectId(shiftId)) {

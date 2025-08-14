@@ -33,7 +33,7 @@ const ShiftSwap = () => {
         const load = async () => {
             try {
                 const [scheduleRes, optionsRes] = await Promise.all([
-                    axiosInstance.get('/api/schedule/me'),
+                    axiosInstance.get('/api/schedule/me', { params: { userId: user.id } }),
                     axiosInstance.get(`/api/schedule/available-swaps/${shiftId}`),
                 ]);
                 const mine = scheduleRes.data.find(s => String(s.id) === String(shiftId));
@@ -58,6 +58,7 @@ const ShiftSwap = () => {
 
         try {
             await axiosInstance.post(`/api/requests/swap`, {
+                userId: user.id,
                 shiftId,
                 targetShiftId: selectedTargetShift,
             });

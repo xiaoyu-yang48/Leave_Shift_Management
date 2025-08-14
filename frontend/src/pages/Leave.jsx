@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
+import { useAuth } from '../context/AuthContext';
 
 const Leave = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [form, setForm] = useState({ startDate: '', endDate: '', reason: '' });
     const [submitting, setSubmitting] = useState(false);
 
@@ -15,7 +17,7 @@ const Leave = () => {
         }
         setSubmitting(true);
         try {
-            await axiosInstance.post('/api/requests/leave', form);
+            await axiosInstance.post('/api/requests/leave', { userId: user.id, ...form });
             alert('Leave request submitted');
             navigate('/request_status');
         } catch (e) {

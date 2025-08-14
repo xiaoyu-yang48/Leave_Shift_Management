@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
+import { useAuth } from '../context/AuthContext';
 
 const Overtime = () => {
     const { shiftId } = useParams();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [hours, setHours] = useState('');
     const [reason, setReason] = useState('');
     const [myShift, setMyShift] = useState(null);
@@ -14,7 +16,7 @@ const Overtime = () => {
     useEffect(() => {
         const load = async () => {
             try {
-                const res = await axiosInstance.get('/api/schedule/me');
+                const res = await axiosInstance.get('/api/schedule/me', { params: { userId: user.id } });
                 const s = res.data.find(x => String(x.id) === String(shiftId));
                 setMyShift(s || null);
             } catch (e) {
@@ -23,15 +25,15 @@ const Overtime = () => {
                 setLoading(false);
             }
         };
-        load();
-    }, [shiftId]);
+        if (user) load();
+    }, [shiftId, user]);
 
     const submit = async (e) => {
         e.preventDefault();
         if (!shiftId || !hours) { alert('Please provide hours'); return; }
         setSubmitting(true);
         try {
-            await axiosInstance.post('/api/requests/overtime', { shiftId, hours: Number(hours), reason });
+            await axiosInstance.post('/api/requests/overtime', { userId: user.id, shiftId, hours: Number(hours), reason });
             alert('Overtime request submitted');
             navigate('/request_status');
         } catch (e) {
