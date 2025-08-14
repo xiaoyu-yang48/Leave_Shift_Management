@@ -13,7 +13,7 @@ const WorkHome = () => {
     useEffect(() => {
         const fetchSchedule = async () => {
             try {
-                const response = await axiosInstance.get(`/api/schedule/me`);
+                const response = await axiosInstance.get('/api/schedule/me');
                 setSchedule(response.data);
             } catch (error) {
                 console.error('Error fetching schedule:', error);
@@ -22,8 +22,9 @@ const WorkHome = () => {
                 setLoading(false);
             }
         };
-
-        fetchSchedule();
+        if (user){
+            fetchSchedule();
+        }
     }, [user.id]);
 
     // frontend test only

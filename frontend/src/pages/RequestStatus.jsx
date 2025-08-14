@@ -27,33 +27,33 @@ const RequestStatus = () => {
     const [loading, setLoading] = useState(true);
     const [cancelingRequestId, setCancelingRequestId] = useState(null);
 
-//     useEffect(() => {
-//         const fetchRequests = async () => {
-//             try {
-//                 const response = await axiosInstance.get('/api/requests', {
-//                     headers: { Authorization: `Bearer ${user.token}` },
-//                 });
-//                 setRequests(response.data);
-//             } catch (error) {
-//                 alert('Failed to fetch requests.');
-//             } finally {
-//                 setLoading(false);
-//             }
-//         };
-
-//         fetchRequests();
-//     }, [user]);
-
-
-    // frontend test only
     useEffect(() => {
-        setRequests([
-            { id: 'r001', type: 'Leave', status: 'Pending', date: '2023-10-01' },
-            { id: 'r002', type: 'Overtime', status: 'Approved', date: '2023-10-02' },
-            { id: 'r003', type: 'Shift Swap', status: 'Rejected', date: '2023-10-03' },
-        ]);
-        setLoading(false);
-    }, []);
+        const fetchRequests = async () => {
+            try {
+                const response = await axiosInstance.get('/api/requests/me');
+                setRequests(response.data);
+            } catch (error) {
+                alert('Failed to fetch requests.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (user) {
+            fetchRequests();
+        }
+    }, [user]);
+
+
+    // // frontend test only
+    // useEffect(() => {
+    //     setRequests([
+    //         { id: 'r001', type: 'Leave', status: 'Pending', date: '2023-10-01' },
+    //         { id: 'r002', type: 'Overtime', status: 'Approved', date: '2023-10-02' },
+    //         { id: 'r003', type: 'Shift Swap', status: 'Rejected', date: '2023-10-03' },
+    //     ]);
+    //     setLoading(false);
+    // }, []);
 
 
     const handleCancelRequest = async (req) => {
@@ -64,12 +64,12 @@ const RequestStatus = () => {
 
         try {
             setCancelingRequestId(req.id);
-            // const response = await axiosInstance.post(`/api/requests/${req.id}/cancel`, {}, {
-            //     headers: { Authorization: `Bearer ${user.token}` },
-            // });
-            // alert('Request canceled successfully');
-            setRequests(prev => prev.map(r => r.id === req.id ? {...r, status: 'Canceled'} : r));
-            console.log(`Request ${req.id} canceled successfully`);
+            const requestType = req.type.toLowerCase().replace(' ', '_');
+            await axiosInstance.put(`/api/requests/${requestType}/${req.id}/cancel`);
+                alert('Request canceled successfully!');
+
+                const response = await axiosInstance.get('/api/requests/me');
+                setRequests(response.data);
         } catch (error) {
             alert('Failed to cancel request.');
         } finally {
@@ -86,8 +86,10 @@ const RequestStatus = () => {
                 <thead>
                     <tr>
                         <th className="py-2 px-4 border-b">Type</th>
-                        <th className="py-2 px-4 border-b">Request Date</th>
+                        <th className="py-2 px-4 border-b">Sub Types</th>
+                        <th className="py-2 px-4 border-b">Details</th>
                         <th className="py-2 px-4 border-b">Status</th>
+                        <th className="py-2 px-4 border-b">Request Date</th>
                         <th className="py-2 px-4 border-b">Actions</th>
                     </tr>
                 </thead>
@@ -95,10 +97,42 @@ const RequestStatus = () => {
                     {requests.map(request => (
                         <tr key={request.id}>
                             <td className="py-2 px-4 border-b">{request.type}</td>
-                            <td className="py-2 px-4 border-b">{request.date}</td>
+                            <td className="py-2 px-4 border-b">{request.subType || 'N/A'}</td>
+                            <td className="py-2 px-4 border-b">
+                                {request.type === 'Leave' && (
+                                    <div>
+                                        <p>Start: {request.details.startDate}</p>
+                                        <p>End: {request.details.endDate}</p>
+                                    </div>
+                                )}
+
+                                {request.type === 'Overtime' && (
+                                    <div>
+                                        <p>Date: {request.details.date}</p>
+                                        <p>Hours: {request.details.hours}</p>
+                                    </div>
+                                )}
+
+                                {request.type === 'Shift Swap' && (
+                                    <div>
+                                        <p>My Shift: {request.details.requesterSchedule?.date} - {request.details.requesterSchedule?.type}</p>
+                                        <p>Target Shift: {request.details.targetUser?.name || 'Open Request'}</p>
+                                    </div>
+                                )}
+
+                                {request.subType === 'Received' && (
+                                    <div>
+                                        <p>From: {request.details.requester?.name}</p> 
+                                        <p>Shift: {request.details.requesterSchedule?.date} - {request.details.requesterSchedule?.type}</p>
+                                    </div>
+                                )}
+                                </td>
                             <td className={`py-2 px-4 border-b ${statusColor(request.status)}`}>
                                 {request.status}
                             </td>
+
+                            <td className="py-2 px-4 border-b">{new Date(request.createdAt).toLocaleDateString()}</td>
+                            
                             <td className="py-2 px-4 border-b">
                                 {request.status === 'Pending' && (
                                     <button
