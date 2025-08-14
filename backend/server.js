@@ -16,6 +16,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/schedule', require('./routes/scheduleRoutes'));
 app.use('/api/availability', require('./routes/availabilityRoutes'));
 app.use('/api/requests', require('./routes/requestRoutes'));
+app.use('/api/shifts', require('./routes/shiftsRoutes'));
 
 // Export the app object for testing
 if (require.main === module) {
