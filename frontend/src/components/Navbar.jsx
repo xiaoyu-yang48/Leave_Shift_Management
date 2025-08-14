@@ -17,23 +17,12 @@ const Navbar = () => {
       <div className="flex items-center gap-4">
         {user ? (
           <>
-          {/* admin login */}
-          {user.role === 'admin' ? (
-            <>
-            <Link to="/admin_home" className="mr-4">Home</Link>
-            <Link to="/admin_shift" className="mr-4">Shift</Link>
-            <Link to="/admin_leave" className="mr-4">Leave&Overtime</Link>
-            <Link to="/admin_overtime" className="mr-4">Request Center</Link>
-            </>
-          ) : (
-            // employee login
-            <>
+            {/* employee navigation */}
             <Link to="/home" className="mr-4">Home</Link>
             <Link to="/availability" className="mr-4">Availability</Link>
             <Link to="/leave" className="mr-4">Leave</Link>
+            <Link to="/overtime" className="mr-4">Overtime</Link>
             <Link to="/request_status" className="mr-4">Request Status</Link>
-            </>
-          )}
 
             {/* shared func logout */}
             <button
