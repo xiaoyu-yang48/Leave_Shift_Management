@@ -35,22 +35,29 @@ router.get('/me', protect, async (req, res) => {
 // Save availability for current user (expects array of { date, available })
 router.post('/save', protect, async (req, res) => {
   try {
-    const userId = String(req.user.id);
+    const userId = String(req.user?.id);
     const rows = Array.isArray(req.body) ? req.body : [];
 
     if (!rows.length) {
       return res.status(400).json({ message: 'No availability data provided' });
     }
 
-    const ops = rows.map(row => ({
-      updateOne: {
-        filter: { userId, date: row.date },
-        update: { $set: { userId, date: row.date, available: !!row.available } },
-        upsert: true,
-      },
+    const updates = rows.map(row => ({
+      userId,
+      date: row.date,
+      available: !!row.available,
     }));
 
-    await Availability.bulkWrite(ops);
+    await Promise.all(
+      updates.map(u =>
+        Availability.updateOne(
+          { userId, date: u.date },
+          { $set: u },
+          { upsert: true }
+        )
+      )
+    );
+
     res.json({ message: 'Availability saved' });
   } catch (error) {
     console.error('Error saving availability:', error);
