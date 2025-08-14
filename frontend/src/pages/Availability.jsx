@@ -32,7 +32,8 @@ const Availability = () => {
             try {
                 // Simulated API call for fetching availability
                 const response = await axiosInstance.get(`/api/availability/me`, {
-                    params: { year, month: monthZero + 1 }
+                    params: { year, month: monthZero + 1 },
+                    headers: { Authorization: `Bearer ${user.token}` }
                 });
                 setAvailability(response.data);
                 
@@ -76,7 +77,9 @@ const Availability = () => {
         setSaving(true);
         try {
             // Simulated API call for saving availability
-            await axiosInstance.post('/api/availability/save', rows);
+            await axiosInstance.post('/api/availability/save', rows, {
+                headers: { Authorization: `Bearer ${user.token}` }
+            });
             // console.log('Availability saved:', rows);
             alert('Availability saved successfully!');
         } catch (error) {

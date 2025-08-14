@@ -47,8 +47,8 @@ const ShiftSwap = () => {
         const loadShiftData = async () => {
             try {
                 const [scheduleResponse, availableResponse] = await Promise.all([
-                    axiosInstance.get(`/api/schedule/me`, { params: { userId: user.id } }),
-                    axiosInstance.get(`/api/schedule/availableswaps/me/${shiftId}`),
+                    axiosInstance.get(`/api/schedule/me`, { params: { userId: user.id }, headers: { Authorization: `Bearer ${user.token}` } }),
+                    axiosInstance.get(`/api/schedule/availableswaps/me/${shiftId}`, { headers: { Authorization: `Bearer ${user.token}` } }),
                 ]);
                 const myShiftData = scheduleResponse.data.find(shift => String(shift.id) === String(shiftId));
                 setMyShift(myShiftData||null);
@@ -80,7 +80,7 @@ const ShiftSwap = () => {
                 userId: user.id,
                 myShiftId: myShift.id,
                 targetShiftId: selectedTargetShift,
-            });
+            }, { headers: { Authorization: `Bearer ${user.token}` } });
             alert('Swap request sent successfully!');
             navigate('/request_status');
         } catch (error) {

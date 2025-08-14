@@ -15,7 +15,7 @@ const Leave = () => {
 	useEffect(() => {
 		const load = async () => {
 			try {
-				const resp = await axiosInstance.get('/api/leave/balance');
+				const resp = await axiosInstance.get('/api/leave/balance', { headers: { Authorization: `Bearer ${user.token}` } });
 				setBalance(resp.data);
 			} catch (e) {
 				setBalance({ annualTotal: 20, used: 0, remaining: 20 });
@@ -34,7 +34,7 @@ const Leave = () => {
 		}
 		setSubmitting(true);
 		try {
-			await axiosInstance.post('/api/requests/leave', form);
+			await axiosInstance.post('/api/requests/leave', form, { headers: { Authorization: `Bearer ${user.token}` } });
 			alert('Leave request submitted');
 			navigate('/request_status');
 		} catch (e) {

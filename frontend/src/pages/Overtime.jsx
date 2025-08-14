@@ -17,7 +17,7 @@ const Overtime = () => {
 	useEffect(() => {
 		const load = async () => {
 			try {
-				const resp = await axiosInstance.get('/api/schedule/me');
+				const resp = await axiosInstance.get('/api/schedule/me', { headers: { Authorization: `Bearer ${user.token}` } });
 				const shift = (resp.data || []).find(s => String(s.id) === String(shiftId));
 				setMyShift(shift || null);
 				if (shift) setDate(shift.date);
@@ -38,7 +38,7 @@ const Overtime = () => {
 		}
 		setSubmitting(true);
 		try {
-			await axiosInstance.post('/api/requests/overtime', { date, hours: Number(hours), shiftId });
+			await axiosInstance.post('/api/requests/overtime', { date, hours: Number(hours), shiftId }, { headers: { Authorization: `Bearer ${user.token}` } });
 			alert('Overtime request submitted');
 			navigate('/request_status');
 		} catch (e) {

@@ -13,7 +13,9 @@ const WorkHome = () => {
     useEffect(() => {
         const fetchSchedule = async () => {
             try {
-                const response = await axiosInstance.get('/api/schedule/me');
+                const response = await axiosInstance.get('/api/schedule/me', {
+                    headers: { Authorization: `Bearer ${user.token}` }
+                });
                 setSchedule(response.data);
             } catch (error) {
                 console.error('Error fetching schedule:', error);

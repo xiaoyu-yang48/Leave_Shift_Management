@@ -30,7 +30,9 @@ const RequestStatus = () => {
     useEffect(() => {
         const fetchRequests = async () => {
             try {
-                const response = await axiosInstance.get('/api/requests/me');
+                const response = await axiosInstance.get('/api/requests/me', {
+                    headers: { Authorization: `Bearer ${user.token}` }
+                });
                 setRequests(response.data);
             } catch (error) {
                 alert('Failed to fetch requests.');
@@ -65,10 +67,14 @@ const RequestStatus = () => {
         try {
             setCancelingRequestId(req.id);
             const requestType = req.type.toLowerCase().replace(' ', '_');
-            await axiosInstance.put(`/api/requests/${requestType}/${req.id}/cancel`);
+            await axiosInstance.put(`/api/requests/${requestType}/${req.id}/cancel`, {}, {
+                headers: { Authorization: `Bearer ${user.token}` }
+            });
                 alert('Request canceled successfully!');
 
-                const response = await axiosInstance.get('/api/requests/me');
+                const response = await axiosInstance.get('/api/requests/me', {
+                    headers: { Authorization: `Bearer ${user.token}` }
+                });
                 setRequests(response.data);
         } catch (error) {
             alert('Failed to cancel request.');
