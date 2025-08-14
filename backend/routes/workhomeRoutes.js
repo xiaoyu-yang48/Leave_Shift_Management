@@ -31,28 +31,29 @@ router.get('/me', protect, async (req, res) => {
 // Get available target shifts to swap with for a specific shift
 router.get('/availableswaps/me/:shiftId', protect, async (req, res) => {
     try {
-        const userId = String(req.user?.id);
+        const userId = String(req.user.id);
         const { shiftId } = req.params;
 
         const myShift = await Schedule.findOne({ _id: shiftId, userId }).lean();
         if (!myShift) return res.json([]);
 
-        const candidates = await Schedule.find({
+        const availableShifts = await Schedule.find({
+            userId: { $ne: req.user._id },
             date: myShift.date,
-            _id: { $ne: myShift._id },
+            type: myShift.type
         })
             .populate('userId', 'name')
             .lean();
 
-        const response = candidates.map(doc => ({
-            id: String(doc._id),
-            employeeId: String(doc.userId?._id || ''),
-            employeeName: doc.userId?.name || 'Unknown',
-            date: doc.date,
-            type: doc.type,
+        const formattedShifts = availableShifts.map(shift => ({
+            id: String(shift._id),
+            employeeId: String(shift.userId?._id || ''),
+            employeeName: shift.userId?.name || 'Unknown',
+            date: shift.date,
+            type: shift.type
         }));
 
-        res.json(response);
+        return res.json(formattedShifts);
     } catch (error) {
         console.error('Error fetching available swaps:', error);
         res.status(500).json({ message: 'Server error' });
