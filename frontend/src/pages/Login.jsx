@@ -12,7 +12,10 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axiosInstance.post('/api/auth/login', formData);
-      login(response.data);
+      // store token only in localStorage; context stores user fields
+      if (response.data?.token) localStorage.setItem('token', response.data.token);
+      const { token, ...userOnly } = response.data || {};
+      login(userOnly);
       navigate('/home');
     } catch (error) {
       alert('Login failed. Please try again.');
