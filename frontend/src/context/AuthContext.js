@@ -2,16 +2,16 @@ import React, { createContext, useState, useContext } from 'react';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState({
-    id: 12345,
-    name: 'John Doe',
-    role: 'employee', // or 'admin'
-  });
+// export const AuthProvider = ({ children }) => {
+  // const [user, setUser] = useState({
+  //   id: 12345,
+  //   name: 'John Doe',
+  //   role: 'employee', // or 'admin'
+  // });
   
 
-// export const AuthProvider = ({ children }) => {
-//   const [user, setUser] = useState(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
 
   const login = (userData) => {
     setUser(userData);
