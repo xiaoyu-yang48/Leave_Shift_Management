@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useAuth } from '../context/AuthContext';
-// import axiosInstance from '../axiosConfig';
+import axiosInstance from '../axiosConfig';
 
 function getDaysInMonth(year, monthZero) {
     return new Date(year, monthZero + 1, 0).getDate();
@@ -30,16 +30,10 @@ const Availability = () => {
         const fetchAvailability = async () => {
             setLoading(true);
             try {
-                // Simulated API call for fetching availability
-                // const response = await axiosInstance.get(`/api/availability/${user.id}`);
-                // setAvailability(response.data);
-                
-                // frontend test only
-                setAvailability([
-                    { date: fmt(year, monthZero, 10), available: true },
-                    { date: fmt(year, monthZero, 17), available: false },
-                    { date: fmt(year, monthZero, 25), available: true },
-                ]);
+                const response = await axiosInstance.get('/api/availability/me', {
+                    params: { month: monthZero + 1, year }
+                });
+                setAvailability(response.data);
             } catch (error) {
                 console.error('Error fetching availability:', error);
                 alert('Failed to load availability. Please try again later.');
@@ -49,7 +43,7 @@ const Availability = () => {
         };
 
        if (user) fetchAvailability();
-    }, [user.id, year, monthZero]);
+    }, [user, year, monthZero]);
 
     useEffect(() => {
     const overrides = new Map(availability.map(item => [item.date, item.available]));
@@ -73,13 +67,18 @@ const Availability = () => {
     const handleSave = async () => {
         setSaving(true);
         try {
-            // Simulated API call for saving availability
-            // await axiosInstance.post('/api/availability/save', rows);
-            console.log('Availability saved:', rows);
+            await axiosInstance.post('/api/availability/update', {
+                availabilityData: rows
+            });
             alert('Availability saved successfully!');
+            // Refresh the availability data
+            const response = await axiosInstance.get('/api/availability/me', {
+                params: { month: monthZero + 1, year }
+            });
+            setAvailability(response.data);
         } catch (error) {
             console.error('Error saving availability:', error);
-            alert('Failed to save availability. Please try again later.');
+            alert(error.response?.data?.message || 'Failed to save availability. Please try again later.');
         } finally {
             setSaving(false);
         }

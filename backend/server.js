@@ -12,6 +12,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/schedule', require('./routes/scheduleRoutes'));
+app.use('/api/leave', require('./routes/leaveRoutes'));
+app.use('/api/overtime', require('./routes/overtimeRoutes'));
+app.use('/api/shiftswap', require('./routes/shiftSwapRoutes'));
+app.use('/api/availability', require('./routes/availabilityRoutes'));
+app.use('/api/requests', require('./routes/requestRoutes'));
 //app.use('/api/tasks', require('./routes/taskRoutes'));
 
 // Export the app object for testing
