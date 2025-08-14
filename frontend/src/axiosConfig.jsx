@@ -6,4 +6,18 @@ const axiosInstance = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+axiosInstance.interceptors.request.use((config) => {
+  try {
+    const stored = localStorage.getItem('user');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (parsed?.token) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${parsed.token}`;
+      }
+    }
+  } catch {}
+  return config;
+});
+
 export default axiosInstance;

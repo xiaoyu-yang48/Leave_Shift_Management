@@ -15,9 +15,11 @@ app.use('/api/auth', require('./routes/authRoutes'));
 //app.use('/api/tasks', require('./routes/taskRoutes'));
 app.use('/api/schedule', require('./routes/workhomeRoutes'));
 app.use('/api/availability', require('./routes/availabilityRoutes'));
-
-// Export the app object for testing
-if (require.main === module) {
+app.use('/api/requests', require('./routes/requestRoutes'));
+app.use('/api/leave', require('./routes/leaveRoutes'));
+ 
+ // Export the app object for testing
+ if (require.main === module) {
     connectDB();
     // If the file is run directly, start the server
     const PORT = process.env.PORT || 5001;
