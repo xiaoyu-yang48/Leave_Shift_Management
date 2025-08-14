@@ -32,7 +32,8 @@ const Availability = () => {
             try {
                 // Simulated API call for fetching availability
                 const response = await axiosInstance.get(`/api/availability/me`, {
-                    params: { year, month: monthZero + 1 });
+                    params: { year, month: monthZero + 1 }
+                });
                 setAvailability(response.data);
                 
                 // // frontend test only
