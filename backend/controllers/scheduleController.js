@@ -19,16 +19,13 @@ const getMySchedule = async (req, res) => {
 
         const schedule = await Schedule.find(query)
             .sort({ date: 1 })
-            .select('_id date type startTime endTime status')
+            .select('_id date type')
             .lean();
 
         const formattedSchedule = schedule.map(shift => ({
             id: shift._id,
             date: shift.date,
-            type: shift.type,
-            startTime: shift.startTime,
-            endTime: shift.endTime,
-            status: shift.status
+            type: shift.type
         }));
 
         res.json(formattedSchedule);
@@ -60,10 +57,7 @@ const getScheduleById = async (req, res) => {
         res.json({
             id: schedule._id,
             date: schedule.date,
-            type: schedule.type,
-            startTime: schedule.startTime,
-            endTime: schedule.endTime,
-            status: schedule.status
+            type: schedule.type
         });
     } catch (error) {
         console.error('Error fetching schedule:', error);

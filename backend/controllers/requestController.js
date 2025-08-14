@@ -15,22 +15,22 @@ const getMyRequests = async (req, res) => {
 
         // Get overtime requests
         const overtimeRequests = await Overtime.find({ userId })
-            .populate('scheduleId', 'date type startTime endTime')
+            .populate('scheduleId', 'date type')
             .select('_id date requestedHours approvedHours reason status adminNotes requestDate scheduleId')
             .lean();
 
         // Get shift swap requests (both sent and received)
         const sentShiftSwaps = await ShiftSwap.find({ requesterId: userId })
-            .populate('requesterScheduleId', 'date type startTime endTime')
+            .populate('requesterScheduleId', 'date type')
             .populate('targetUserId', 'name email')
-            .populate('targetScheduleId', 'date type startTime endTime')
+            .populate('targetScheduleId', 'date type')
             .select('_id reason status adminNotes requestDate responseDate requesterScheduleId targetUserId targetScheduleId')
             .lean();
 
         const receivedShiftSwaps = await ShiftSwap.find({ targetUserId: userId })
             .populate('requesterId', 'name email')
-            .populate('requesterScheduleId', 'date type startTime endTime')
-            .populate('targetScheduleId', 'date type startTime endTime')
+            .populate('requesterScheduleId', 'date type')
+            .populate('targetScheduleId', 'date type')
             .select('_id reason status adminNotes requestDate responseDate requesterId requesterScheduleId targetScheduleId')
             .lean();
 
@@ -69,9 +69,7 @@ const getMyRequests = async (req, res) => {
                     reason: overtime.reason,
                     adminNotes: overtime.adminNotes,
                     schedule: overtime.scheduleId ? {
-                        type: overtime.scheduleId.type,
-                        startTime: overtime.scheduleId.startTime,
-                        endTime: overtime.scheduleId.endTime
+                        type: overtime.scheduleId.type
                     } : null
                 }
             });
@@ -91,9 +89,7 @@ const getMyRequests = async (req, res) => {
                     responseDate: swap.responseDate,
                     requesterSchedule: swap.requesterScheduleId ? {
                         date: swap.requesterScheduleId.date,
-                        type: swap.requesterScheduleId.type,
-                        startTime: swap.requesterScheduleId.startTime,
-                        endTime: swap.requesterScheduleId.endTime
+                        type: swap.requesterScheduleId.type
                     } : null,
                     targetUser: swap.targetUserId ? {
                         name: swap.targetUserId.name,
@@ -101,9 +97,7 @@ const getMyRequests = async (req, res) => {
                     } : null,
                     targetSchedule: swap.targetScheduleId ? {
                         date: swap.targetScheduleId.date,
-                        type: swap.targetScheduleId.type,
-                        startTime: swap.targetScheduleId.startTime,
-                        endTime: swap.targetScheduleId.endTime
+                        type: swap.targetScheduleId.type
                     } : null
                 }
             });
@@ -127,15 +121,11 @@ const getMyRequests = async (req, res) => {
                     } : null,
                     requesterSchedule: swap.requesterScheduleId ? {
                         date: swap.requesterScheduleId.date,
-                        type: swap.requesterScheduleId.type,
-                        startTime: swap.requesterScheduleId.startTime,
-                        endTime: swap.requesterScheduleId.endTime
+                        type: swap.requesterScheduleId.type
                     } : null,
                     targetSchedule: swap.targetScheduleId ? {
                         date: swap.targetScheduleId.date,
-                        type: swap.targetScheduleId.type,
-                        startTime: swap.targetScheduleId.startTime,
-                        endTime: swap.targetScheduleId.endTime
+                        type: swap.targetScheduleId.type
                     } : null
                 }
             });

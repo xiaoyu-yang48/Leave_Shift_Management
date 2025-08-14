@@ -13,20 +13,7 @@ const scheduleSchema = new mongoose.Schema({
     type: { 
         type: String, 
         required: true,
-        enum: ['Morning', 'Afternoon', 'Evening', 'Night']
-    },
-    startTime: { 
-        type: String, 
-        required: true 
-    }, // Format: HH:MM
-    endTime: { 
-        type: String, 
-        required: true 
-    }, // Format: HH:MM
-    status: {
-        type: String,
-        enum: ['Scheduled', 'Completed', 'Cancelled'],
-        default: 'Scheduled'
+        enum: ['Morning', 'Afternoon']
     }
 }, {
     timestamps: true

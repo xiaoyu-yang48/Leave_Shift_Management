@@ -10,17 +10,17 @@ const getMyShiftSwapRequests = async (req, res) => {
         
         // Get requests sent by the user
         const sentRequests = await ShiftSwap.find({ requesterId: userId })
-            .populate('requesterScheduleId', 'date type startTime endTime')
+            .populate('requesterScheduleId', 'date type')
             .populate('targetUserId', 'name email')
-            .populate('targetScheduleId', 'date type startTime endTime')
+            .populate('targetScheduleId', 'date type')
             .sort({ requestDate: -1 })
             .lean();
 
         // Get requests received by the user
         const receivedRequests = await ShiftSwap.find({ targetUserId: userId })
             .populate('requesterId', 'name email')
-            .populate('requesterScheduleId', 'date type startTime endTime')
-            .populate('targetScheduleId', 'date type startTime endTime')
+            .populate('requesterScheduleId', 'date type')
+            .populate('targetScheduleId', 'date type')
             .sort({ requestDate: -1 })
             .lean();
 
@@ -45,16 +45,12 @@ const getMyShiftSwapRequests = async (req, res) => {
             requesterSchedule: request.requesterScheduleId ? {
                 id: request.requesterScheduleId._id,
                 date: request.requesterScheduleId.date,
-                type: request.requesterScheduleId.type,
-                startTime: request.requesterScheduleId.startTime,
-                endTime: request.requesterScheduleId.endTime
+                type: request.requesterScheduleId.type
             } : null,
             targetSchedule: request.targetScheduleId ? {
                 id: request.targetScheduleId._id,
                 date: request.targetScheduleId.date,
-                type: request.targetScheduleId.type,
-                startTime: request.targetScheduleId.startTime,
-                endTime: request.targetScheduleId.endTime
+                type: request.targetScheduleId.type
             } : null
         });
 
@@ -144,9 +140,9 @@ const createShiftSwapRequest = async (req, res) => {
 
         // Populate the response
         await shiftSwap.populate([
-            { path: 'requesterScheduleId', select: 'date type startTime endTime' },
+            { path: 'requesterScheduleId', select: 'date type' },
             { path: 'targetUserId', select: 'name email' },
-            { path: 'targetScheduleId', select: 'date type startTime endTime' }
+            { path: 'targetScheduleId', select: 'date type' }
         ]);
 
         res.status(201).json({
@@ -157,9 +153,7 @@ const createShiftSwapRequest = async (req, res) => {
             requesterSchedule: {
                 id: shiftSwap.requesterScheduleId._id,
                 date: shiftSwap.requesterScheduleId.date,
-                type: shiftSwap.requesterScheduleId.type,
-                startTime: shiftSwap.requesterScheduleId.startTime,
-                endTime: shiftSwap.requesterScheduleId.endTime
+                type: shiftSwap.requesterScheduleId.type
             },
             target: shiftSwap.targetUserId ? {
                 id: shiftSwap.targetUserId._id,
@@ -169,9 +163,7 @@ const createShiftSwapRequest = async (req, res) => {
             targetSchedule: shiftSwap.targetScheduleId ? {
                 id: shiftSwap.targetScheduleId._id,
                 date: shiftSwap.targetScheduleId.date,
-                type: shiftSwap.targetScheduleId.type,
-                startTime: shiftSwap.targetScheduleId.startTime,
-                endTime: shiftSwap.targetScheduleId.endTime
+                type: shiftSwap.targetScheduleId.type
             } : null
         });
     } catch (error) {

@@ -8,7 +8,7 @@ const getMyOvertimeRequests = async (req, res) => {
         const userId = req.user.id;
         
         const overtimes = await Overtime.find({ userId })
-            .populate('scheduleId', 'date type startTime endTime')
+            .populate('scheduleId', 'date type')
             .sort({ requestDate: -1 })
             .select('_id date requestedHours reason status adminNotes approvedHours requestDate scheduleId')
             .lean();
@@ -24,9 +24,7 @@ const getMyOvertimeRequests = async (req, res) => {
             requestDate: overtime.requestDate,
             schedule: overtime.scheduleId ? {
                 id: overtime.scheduleId._id,
-                type: overtime.scheduleId.type,
-                startTime: overtime.scheduleId.startTime,
-                endTime: overtime.scheduleId.endTime
+                type: overtime.scheduleId.type
             } : null
         }));
 
@@ -84,7 +82,7 @@ const createOvertimeRequest = async (req, res) => {
         });
 
         // Populate the schedule info for response
-        await overtime.populate('scheduleId', 'date type startTime endTime');
+        await overtime.populate('scheduleId', 'date type');
 
         res.status(201).json({
             id: overtime._id,
@@ -95,9 +93,7 @@ const createOvertimeRequest = async (req, res) => {
             requestDate: overtime.requestDate,
             schedule: {
                 id: overtime.scheduleId._id,
-                type: overtime.scheduleId.type,
-                startTime: overtime.scheduleId.startTime,
-                endTime: overtime.scheduleId.endTime
+                type: overtime.scheduleId.type
             }
         });
     } catch (error) {

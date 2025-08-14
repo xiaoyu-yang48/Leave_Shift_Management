@@ -122,8 +122,7 @@ const Overtime = () => {
         // Filter out shifts that already have overtime requests
         const shiftsWithOvertime = overtimeRequests.map(ot => ot.schedule?.id);
         return schedule.filter(shift => 
-            !shiftsWithOvertime.includes(shift.id) && 
-            shift.status === 'Scheduled' &&
+            !shiftsWithOvertime.includes(shift.id) &&
             new Date(shift.date) >= new Date().setHours(0, 0, 0, 0)
         );
     };
@@ -169,7 +168,7 @@ const Overtime = () => {
                                 <option value="">Select a shift</option>
                                 {getAvailableShifts().map(shift => (
                                     <option key={shift.id} value={shift.id}>
-                                        {shift.date} - {shift.type} ({shift.startTime} - {shift.endTime})
+                                        {shift.date} - {shift.type}
                                     </option>
                                 ))}
                             </select>
@@ -249,17 +248,7 @@ const Overtime = () => {
                                 <tr key={overtime.id}>
                                     <td className="py-2 px-4 border-b">{overtime.date}</td>
                                     <td className="py-2 px-4 border-b">
-                                        {overtime.schedule ? (
-                                            <>
-                                                {overtime.schedule.type}
-                                                <br />
-                                                <small className="text-gray-600">
-                                                    {overtime.schedule.startTime} - {overtime.schedule.endTime}
-                                                </small>
-                                            </>
-                                        ) : (
-                                            'N/A'
-                                        )}
+                                        {overtime.schedule ? overtime.schedule.type : 'N/A'}
                                     </td>
                                     <td className="py-2 px-4 border-b">{overtime.requestedHours}h</td>
                                     <td className="py-2 px-4 border-b">

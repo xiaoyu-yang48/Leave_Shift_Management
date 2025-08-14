@@ -171,8 +171,7 @@ const ShiftSwap = () => {
                     <h3 className="text-lg font-semibold mb-2">Your Shift to Swap:</h3>
                     <p className="text-gray-700">
                         <strong>Date:</strong> {myShift.date} | 
-                        <strong> Type:</strong> {myShift.type} | 
-                        <strong> Time:</strong> {myShift.startTime} - {myShift.endTime}
+                        <strong> Type:</strong> {myShift.type}
                     </p>
                 </div>
             )}
@@ -264,7 +263,7 @@ const ShiftSwap = () => {
                                                 {request.requesterSchedule.date}
                                                 <br />
                                                 <small className="text-gray-600">
-                                                    {request.requesterSchedule.type} ({request.requesterSchedule.startTime}-{request.requesterSchedule.endTime})
+                                                    {request.requesterSchedule.type}
                                                 </small>
                                             </>
                                         ) : 'N/A'}
@@ -282,7 +281,7 @@ const ShiftSwap = () => {
                                                 {request.targetSchedule.date}
                                                 <br />
                                                 <small className="text-gray-600">
-                                                    {request.targetSchedule.type} ({request.targetSchedule.startTime}-{request.targetSchedule.endTime})
+                                                    {request.targetSchedule.type}
                                                 </small>
                                             </>
                                         ) : 'TBD'}
