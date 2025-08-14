@@ -4,22 +4,27 @@ const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Get availability for the current user filtered by year and month
+// Get availability for the current user filtered by year and month (defaults to current month)
 router.get('/me', protect, async (req, res) => {
   try {
     const userId = String(req.user.id);
-    const { year, month } = req.query; // month: 1-12
+    let { year, month } = req.query; // month: 1-12
 
-    let regex = undefined;
-    if (year && month) {
-      const mm = String(month).padStart(2, '0');
-      regex = new RegExp(`^${year}-${mm}-`);
+    // Default to current month if not provided
+    if (!year || !month) {
+      const now = new Date();
+      year = now.getFullYear();
+      month = now.getMonth() + 1; // 1-12
     }
 
-    const query = { userId };
-    if (regex) query.date = { $regex: regex };
+    const mm = String(month).padStart(2, '0');
+    const prefix = `${year}-${mm}-`;
 
-    const docs = await Availability.find(query, { _id: 0, userId: 0, createdAt: 0, updatedAt: 0, __v: 0 }).lean();
+    const docs = await Availability.find(
+      { userId, date: { $regex: `^${prefix}` } },
+      { _id: 0, userId: 0, createdAt: 0, updatedAt: 0, __v: 0 }
+    ).lean();
+
     res.json(docs);
   } catch (error) {
     console.error('Error fetching availability:', error);
@@ -37,7 +42,6 @@ router.post('/save', protect, async (req, res) => {
       return res.status(400).json({ message: 'No availability data provided' });
     }
 
-    // Perform upserts
     const ops = rows.map(row => ({
       updateOne: {
         filter: { userId, date: row.date },

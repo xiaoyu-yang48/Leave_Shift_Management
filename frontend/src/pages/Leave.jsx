@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
 
 const Leave = () => {
+    const navigate = useNavigate();
     const [form, setForm] = useState({ startDate: '', endDate: '', reason: '' });
     const [submitting, setSubmitting] = useState(false);
 
@@ -15,7 +17,7 @@ const Leave = () => {
         try {
             await axiosInstance.post('/api/requests/leave', form);
             alert('Leave request submitted');
-            setForm({ startDate: '', endDate: '', reason: '' });
+            navigate('/request_status');
         } catch (e) {
             alert('Failed to submit leave request');
         } finally {
