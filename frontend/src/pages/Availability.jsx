@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useAuth } from '../context/AuthContext';
-// import axiosInstance from '../axiosConfig';
+import axiosInstance from '../axiosConfig';
 
 function getDaysInMonth(year, monthZero) {
     return new Date(year, monthZero + 1, 0).getDate();
@@ -31,15 +31,16 @@ const Availability = () => {
             setLoading(true);
             try {
                 // Simulated API call for fetching availability
-                // const response = await axiosInstance.get(`/api/availability/${user.id}`);
-                // setAvailability(response.data);
+                const response = await axiosInstance.get(`/api/availability/me`, {
+                    params: { year, month: monthZero + 1 });
+                setAvailability(response.data);
                 
-                // frontend test only
-                setAvailability([
-                    { date: fmt(year, monthZero, 10), available: true },
-                    { date: fmt(year, monthZero, 17), available: false },
-                    { date: fmt(year, monthZero, 25), available: true },
-                ]);
+                // // frontend test only
+                // setAvailability([
+                //     { date: fmt(year, monthZero, 10), available: true },
+                //     { date: fmt(year, monthZero, 17), available: false },
+                //     { date: fmt(year, monthZero, 25), available: true },
+                // ]);
             } catch (error) {
                 console.error('Error fetching availability:', error);
                 alert('Failed to load availability. Please try again later.');
@@ -74,8 +75,8 @@ const Availability = () => {
         setSaving(true);
         try {
             // Simulated API call for saving availability
-            // await axiosInstance.post('/api/availability/save', rows);
-            console.log('Availability saved:', rows);
+            await axiosInstance.post('/api/availability/save', rows);
+            // console.log('Availability saved:', rows);
             alert('Availability saved successfully!');
         } catch (error) {
             console.error('Error saving availability:', error);
