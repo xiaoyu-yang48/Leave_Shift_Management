@@ -51,7 +51,7 @@ const Availability = () => {
         };
 
        if (user) fetchAvailability();
-    }, [user.id, year, monthZero]);
+    }, [user, year, monthZero]);
 
     useEffect(() => {
     const overrides = new Map(availability.map(item => [item.date, item.available]));
