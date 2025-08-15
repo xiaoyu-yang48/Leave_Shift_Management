@@ -108,15 +108,15 @@ const RequestStatus = () => {
 
                                 {request.type === 'Shift Swap' && (
                                     <div>
-                                        <p>My Shift: {request.details.requesterSchedule?.date} - {request.details.requesterSchedule?.type}</p>
-                                        <p>Target Shift: {request.details.targetUser?.name || 'Open Request'}</p>
+                                        <p>My Shift: {(request.details.requesterSchedule?.date || request.details.requesterShift?.date)} - {(request.details.requesterSchedule?.type || request.details.requesterShift?.type)}</p>
+                                        <p>Target Shift: {(request.details.targetUser?.name || request.details.targetEmployee?.name) || 'Open Request'}</p>
                                     </div>
                                 )}
 
                                 {request.subType === 'Received' && (
                                     <div>
-                                        <p>From: {request.details.requester?.name}</p> 
-                                        <p>Shift: {request.details.requesterSchedule?.date} - {request.details.requesterSchedule?.type}</p>
+                                        <p>From: {(request.details.requester?.name || request.details.targetEmployee?.name)}</p> 
+                                        <p>Shift: {(request.details.requesterSchedule?.date || request.details.requesterShift?.date)} - {(request.details.requesterSchedule?.type || request.details.requesterShift?.type)}</p>
                                     </div>
                                 )}
                                 </td>
