@@ -128,12 +128,37 @@ const RequestStatus = () => {
                             
                             <td className="py-2 px-4 border-b">
                                 {request.status === 'Pending' && (
-                                    <button
-                                        className="bg-blue-500 text-white py-2 px-4 border-b hover:scale-105 transition-transform"
-                                        onClick={() => handleCancelRequest(request)}
-                                    >
-                                        Cancel
-                                    </button>
+                                    <div className="flex items-center justify-center gap-2">
+                                        <button
+                                            className="bg-blue-500 text-white py-2 px-4 border-b hover:scale-105 transition-transform"
+                                            onClick={() => handleCancelRequest(request)}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            className="bg-green-600 text-white py-2 px-4 border-b hover:scale-105 transition-transform"
+                                            onClick={async () => {
+                                                if (request.type === 'Overtime') {
+                                                    const newDate = window.prompt('New date (YYYY-MM-DD):', request.details.date || '');
+                                                    if (!newDate) return;
+                                                    const newHours = window.prompt('New hours:', String(request.details.hours || ''));
+                                                    if (!newHours) return;
+                                                    try {
+                                                        await axiosInstance.put(`/api/requests/${request.id}` , { details: { date: newDate, hours: Number(newHours) } });
+                                                        alert('Request updated');
+                                                        const response = await axiosInstance.get('/api/requests/me');
+                                                        setRequests(response.data);
+                                                    } catch (e) {
+                                                        alert('Failed to update request');
+                                                    }
+                                                } else {
+                                                    alert('Editing supported for Overtime only');
+                                                }
+                                            }}
+                                        >
+                                            Edit
+                                        </button>
+                                    </div>
                                 )}
 
                             </td>

@@ -68,4 +68,31 @@ router.put('/:type/:id/cancel', protect, async (req, res) => {
 	}
 });
 
+// Edit a request (only if pending)
+router.put('/:id', protect, async (req, res) => {
+	try {
+		const userId = String(req.user?.id);
+		const { id } = req.params;
+		const { details } = req.body || {};
+
+		const request = await Request.findOne({ _id: id, userId });
+		if (!request) {
+			return res.status(404).json({ message: 'Request not found' });
+		}
+		if (request.status !== 'Pending') {
+			return res.status(400).json({ message: 'Only pending requests can be edited' });
+		}
+		if (!details || typeof details !== 'object') {
+			return res.status(400).json({ message: 'No details to update' });
+		}
+
+		request.details = { ...(request.details || {}), ...details };
+		await request.save();
+		return res.json({ message: 'Request updated' });
+	} catch (error) {
+		console.error('Error updating request:', error);
+		res.status(500).json({ message: 'Server error' });
+	}
+});
+
 module.exports = router;
