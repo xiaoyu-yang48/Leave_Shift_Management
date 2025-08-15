@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
 
 const statusColor = (s) => {
@@ -20,12 +19,9 @@ const statusColor = (s) => {
 
 const RequestStatus = () => {
     const { user } = useAuth();
-    const navigate = useNavigate();
-    const location = useLocation();
 
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [cancelingRequestId, setCancelingRequestId] = useState(null);
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -63,17 +59,14 @@ const RequestStatus = () => {
 
 
         try {
-            setCancelingRequestId(req.id);
             const requestType = req.type.toLowerCase().replace(' ', '_');
             await axiosInstance.put(`/api/requests/${requestType}/${req.id}/cancel`);
-                alert('Request canceled successfully!');
+            alert('Request canceled successfully!');
 
-                const response = await axiosInstance.get('/api/requests/me');
-                setRequests(response.data);
+            const response = await axiosInstance.get('/api/requests/me');
+            setRequests(response.data);
         } catch (error) {
             alert('Failed to cancel request.');
-        } finally {
-            setCancelingRequestId(null);
         }
     };
 
