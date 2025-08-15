@@ -33,7 +33,7 @@ function App() {
         <Route path="/shiftswap/:shiftId" element={<ShiftSwap />} />
         <Route path="/availability" element={<Availability />} />
         <Route path="/leave" element={<Leave />} />
-        <Route path="/overtime" element={<Overtime />} />
+        <Route path="/overtime/:shiftId" element={<Overtime />} />
         <Route path="/request_status" element={<RequestStatus />} />
 
         {/* admin pages */} 

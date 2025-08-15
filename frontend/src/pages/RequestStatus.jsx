@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
 
 const statusColor = (s) => {
@@ -20,12 +19,9 @@ const statusColor = (s) => {
 
 const RequestStatus = () => {
     const { user } = useAuth();
-    const navigate = useNavigate();
-    const location = useLocation();
 
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [cancelingRequestId, setCancelingRequestId] = useState(null);
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -63,17 +59,14 @@ const RequestStatus = () => {
 
 
         try {
-            setCancelingRequestId(req.id);
             const requestType = req.type.toLowerCase().replace(' ', '_');
             await axiosInstance.put(`/api/requests/${requestType}/${req.id}/cancel`);
-                alert('Request canceled successfully!');
+            alert('Request canceled successfully!');
 
-                const response = await axiosInstance.get('/api/requests/me');
-                setRequests(response.data);
+            const response = await axiosInstance.get('/api/requests/me');
+            setRequests(response.data);
         } catch (error) {
             alert('Failed to cancel request.');
-        } finally {
-            setCancelingRequestId(null);
         }
     };
 
@@ -115,15 +108,15 @@ const RequestStatus = () => {
 
                                 {request.type === 'Shift Swap' && (
                                     <div>
-                                        <p>My Shift: {request.details.requesterSchedule?.date} - {request.details.requesterSchedule?.type}</p>
-                                        <p>Target Shift: {request.details.targetUser?.name || 'Open Request'}</p>
+                                        <p>My Shift: {(request.details.requesterSchedule?.date || request.details.requesterShift?.date)} - {(request.details.requesterSchedule?.type || request.details.requesterShift?.type)}</p>
+                                        <p>Target Shift: {(request.details.targetUser?.name || request.details.targetEmployee?.name) || 'Open Request'}</p>
                                     </div>
                                 )}
 
                                 {request.subType === 'Received' && (
                                     <div>
-                                        <p>From: {request.details.requester?.name}</p> 
-                                        <p>Shift: {request.details.requesterSchedule?.date} - {request.details.requesterSchedule?.type}</p>
+                                        <p>From: {(request.details.requester?.name || request.details.targetEmployee?.name)}</p> 
+                                        <p>Shift: {(request.details.requesterSchedule?.date || request.details.requesterShift?.date)} - {(request.details.requesterSchedule?.type || request.details.requesterShift?.type)}</p>
                                     </div>
                                 )}
                                 </td>
