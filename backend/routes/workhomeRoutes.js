@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Schedule = require('../models/Schedule');
 const { protect } = require('../middleware/authMiddleware');
 const User = require('../models/User');
+const Request = require('../models/Request');
 
 const router = express.Router();
 
@@ -32,7 +33,7 @@ router.get('/availableswaps/me/:shiftId', protect, async (req, res) => {
 
     try {
         const userId = String(req.user?.id);
-        const shiftId = req.params;
+        const { shiftId } = req.params;
 
         const myShift = await Schedule.findOne({ _id: shiftId, userId }).lean();
         if (!myShift) {
@@ -80,9 +81,8 @@ router.post('/swap', protect, async (req, res) => {
             type: 'Shift Swap',
             status: 'Pending',
             details: {
-                requesterShift: { id: String(myShift._id), date: myShift.date, type: myShift.type },
-                targetShift: { id: String(targetShift._id), date: targetShift.date, type: targetShift.type },
-                targetEmployee: targetEmployee ? { id: String(targetEmployee._id), name: targetEmployee.name } : null,
+                requesterSchedule: { id: String(myShift._id), date: myShift.date, type: myShift.type },
+                targetUser: targetEmployee ? { id: String(targetEmployee._id), name: targetEmployee.name } : null,
             },
         });
 
