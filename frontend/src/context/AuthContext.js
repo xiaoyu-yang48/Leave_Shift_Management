@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext } from 'react';
-import axiosInstance from '../axiosConfig';
 
 const AuthContext = createContext();
 
@@ -16,14 +15,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = (userData) => {
     setUser(userData);
-    if (userData?.token) {
-      axiosInstance.defaults.headers.common.Authorization = `Bearer ${userData.token}`;
-    }
   };
 
   const logout = () => {
     setUser(null);
-    delete axiosInstance.defaults.headers.common.Authorization;
   };
 
   return (
