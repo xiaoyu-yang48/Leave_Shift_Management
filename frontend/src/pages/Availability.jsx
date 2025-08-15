@@ -115,20 +115,20 @@ const Availability = () => {
         <div>
             <div className="container mx-auto p-6">
                 <h1 className="text-2xl font-bold mb-4">My Availability</h1>
-                <div className="flex justify-between mb-4">
-                    <button onClick={previousMonth} className="bg-gray-200 px-4 py-2 rounded">Previous</button>
-                    <h2 className="text-xl">{year} - {monthZero + 1}</h2>
-                    <button onClick={nextMonth} className="bg-gray-200 px-4 py-2 rounded">Next</button>
+                <div className="flex justify-between mb-4 bg-green-200">
+                    <button onClick={previousMonth} className="bg-green-300 px-4 py-2 rounded">Previous</button>
+                    <h2 className="mr-2 px-4 py-2">{year} - {monthZero + 1}</h2>
+                    <button onClick={nextMonth} className="bg-green-300 px-4 py-2 rounded">Next</button>
             </div>
         </div>
 
         <div className="mb-4">
-            <table className="min-w-full bg-white text-center">
+            <table className="min-w-full border border-green-400 text-center">
                 <thead>
-                    <tr>
-                        <th className="py-2 px-4 border-b">Date</th>
-                        <th className="py-2 px-4 border-b">Available</th>
-                        <th className="py-2 px-4 border-b">Actions</th>
+                    <tr className= "border-b border-green-400">
+                        <th className="py-2 px-4 border-b ">Date</th>
+                        <th className="py-2 px-4 border-b ">Available</th>
+                        <th className="py-2 px-4 border-b ">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -148,16 +148,24 @@ const Availability = () => {
                             </td>
                         </tr>
                     ))}
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td className="py-2 px-4 border-b border-green-400 text-center">
+                            <button
+                                onClick={handleSave}
+                                disabled={saving}
+                                className={`bg-blue-500 text-white px-4 hover:scale-110 transition-transform py-2 rounded ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                {saving ? 'Saving...' : 'Save Availability'}
+                            </button> 
+                        </td>
+                    </tr>                       
                 </tbody>
             </table>
 
-            <button
-                onClick={handleSave}
-                disabled={saving}
-                className={`bg-blue-500 text-white px-4 py-2 rounded ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-                {saving ? 'Saving...' : 'Save Availability'}
-            </button>
+
         </div>
     </div>    
 );

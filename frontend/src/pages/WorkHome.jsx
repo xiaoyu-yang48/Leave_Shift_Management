@@ -27,7 +27,7 @@ const WorkHome = () => {
         }
     }, [user]);
 
-    // frontend test only
+    // // frontend test only
     // useEffect(() => {
     //     setSchedule([
     //         { id: 1, date: '2023-10-01', type: 'Morning' },
@@ -47,20 +47,20 @@ const WorkHome = () => {
             ) : schedule.length === 0 ? (
                 <p>No shifts scheduled for you.</p>
             ) : (
-                <table className="min-w-full bg-white">
+                <table className="min-w-full border-collapse border border-green-400">
                     <thead>
                         <tr>
-                            <th className="py-2 px-4 border-b text-center">Date</th>
-                            <th className="py-2 px-4 border-b text-center">Shift Type</th>
-                            <th className="py-2 px-4 border-b text-center space-x-2">Actions</th>
+                            <th className="border border-green-400 py-2 px-4 border-b text-center">Date</th>
+                            <th className="border border-green-400 py-2 px-4 border-b text-center">Shift Type</th>
+                            <th className="border border-green-400 py-2 px-4 border-b text-center space-x-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {schedule.map((shift) => (
                             <tr key={shift.id}>
-                                <td className="py-2 px-4 border-b text-center">{shift.date}</td>
-                                <td className="py-2 px-4 border-b text-center">{shift.type}</td>
-                                <td className="py-2 px-4 border-b text-center space-x-2">
+                                <td className="border border-green-300 py-2 px-4 border-b text-center">{shift.date}</td>
+                                <td className="border border-green-300 py-2 px-4 border-b text-center">{shift.type}</td>
+                                <td className="border border-green-300 py-2 px-4 border-b text-center space-x-2">
                                     <button
                                         onClick={() => navigate(`/shiftswap/${shift.id}`)}
                                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
