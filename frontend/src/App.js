@@ -3,7 +3,7 @@ import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
-import Tasks from './pages/Tasks';
+// import Tasks from './pages/Tasks';
 
 import WorkHome from './pages/WorkHome';
 import ShiftSwap from './pages/ShiftSwap';
@@ -27,13 +27,14 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/tasks" element={<Tasks />} />
+        {/* <Route path="/tasks" element={<Tasks />} /> */}
+        
         {/* employee pages */}
         <Route path="/home" element={<WorkHome />} />
         <Route path="/shiftswap/:shiftId" element={<ShiftSwap />} />
         <Route path="/availability" element={<Availability />} />
         <Route path="/leave" element={<Leave />} />
-        <Route path="/overtime" element={<Overtime />} />
+        <Route path="/overtime/:shiftId" element={<Overtime />} />
         <Route path="/request_status" element={<RequestStatus />} />
 
         {/* admin pages */} 
