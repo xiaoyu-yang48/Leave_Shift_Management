@@ -40,7 +40,6 @@ A full-stack app aiming to manage employee shift schedule and requests in leaves
 cd backend
 npm install
 cp .env
-# configure .env
 npm run dev
 
 ---
