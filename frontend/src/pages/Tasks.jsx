@@ -12,9 +12,7 @@ const Tasks = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axiosInstance.get('/api/tasks', {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
+        const response = await axiosInstance.get('/api/tasks');
         setTasks(response.data);
       } catch (error) {
         alert('Failed to fetch tasks.');
