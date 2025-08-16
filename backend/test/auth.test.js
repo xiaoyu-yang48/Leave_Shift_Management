@@ -10,6 +10,8 @@ const User = require('../models/User');
 const { expect } = chai;
 chai.use(chaiHttp);
 
+process.env.JWT_SECRET = 'testsecret';
+
 function mockSelect(obj) {
 	return { select: () => Promise.resolve(obj) };
 }
