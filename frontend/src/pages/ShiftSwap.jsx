@@ -30,18 +30,18 @@ const ShiftSwap = () => {
     // }, [user.id]);
 
     // // frontend test only
-    // useEffect(() => {
-    //     setMyShift(
-    //         { id: shiftId, date: '2023-10-01', type: 'Morning' },
-    //     );
+    useEffect(() => {
+        setMyShift(
+            { id: shiftId, date: '2023-10-01', type: 'Morning' },
+        );
 
-    //     setAvailableShifts([
-    //         { id: 200, employeeId: 2, employeeName: 'Alice' , date: '2023-10-02', type: 'Afternoon' },
-    //         { id: 201, employeeId: 3, employeeName: 'Bob' , date: '2023-10-03', type: 'Morning' },
-    //         { id: 202, employeeId: 4, employeeName: 'Charlie' , date: '2023-10-04', type: 'Afternoon' },
-    //     ]);
-    //     setLoading(false);
-    // }, [shiftId]);
+        setAvailableShifts([
+            { id: 200, employeeId: 2, employeeName: 'Alice' , date: '2023-10-02', type: 'Afternoon' },
+            { id: 201, employeeId: 3, employeeName: 'Bob' , date: '2023-10-03', type: 'Morning' },
+            { id: 202, employeeId: 4, employeeName: 'Charlie' , date: '2023-10-04', type: 'Afternoon' },
+        ]);
+        setLoading(false);
+    }, [shiftId]);
 
     useEffect(() => {
         const loadShiftData = async () => {
@@ -101,8 +101,9 @@ const ShiftSwap = () => {
             ) : (
             <>    
             <div className="mb-6">
-                <h3 className="text-xl font-semibold mb-2">Your Shift to Swap:</h3>
-                <p>{myShift?.date} - {myShift?.type}</p>  
+                <h3 className="text-xl font-semibold mb-2">Your Shift to Swap: {""}
+                {myShift?.date} - {myShift?.type}
+                </h3> 
             </div> 
 
             <form onSubmit={handleSwap}>

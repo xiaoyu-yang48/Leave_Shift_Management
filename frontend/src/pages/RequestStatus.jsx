@@ -41,15 +41,18 @@ const RequestStatus = () => {
     }, [user]);
 
 
-    // // frontend test only
-    // useEffect(() => {
-    //     setRequests([
-    //         { id: 'r001', type: 'Leave', status: 'Pending', date: '2023-10-01' },
-    //         { id: 'r002', type: 'Overtime', status: 'Approved', date: '2023-10-02' },
-    //         { id: 'r003', type: 'Shift Swap', status: 'Rejected', date: '2023-10-03' },
-    //     ]);
-    //     setLoading(false);
-    // }, []);
+    // frontend test only
+    useEffect(() => {
+        setRequests([
+            { id: 'r001', type: 'Leave', status: 'Pending', subType: 'Annual', createdAt: '2023-10-01', details: { startDate: '2023-10-05', endDate: '2023-10-10' } },
+            { id: 'r002', type: 'Overtime', status: 'Approved', subType: '', createdAt: '2023-10-02', details: { date: '2023-10-15', hours: 2 } },
+
+            { id: 'r003', type: 'Shift Swap', status: 'Pending', subType: 'Received', createdAt: '2023-10-03', details: { requesterSchedule: { date: '2023-10-20', type: 'Morning' }, targetUser: { name: 'Alice' } } },
+
+            { id: 'r004', type: 'Leave', status: 'Rejected', subType: 'Sick Leave', createdAt: '2023-10-04', details: { startDate: '2023-10-25', endDate: '2023-10-30' } },
+        ]);
+        setLoading(false);
+    }, []);
 
 
     const handleCancelRequest = async (req) => {
@@ -75,7 +78,7 @@ const RequestStatus = () => {
     return (
         <div className="container mx-auto p-6">
             <h1 className="text-2xl font-bold mb-4">My Requests</h1>
-            <table className="min-w-full bg-white text-center">
+            <table className="min-w-full bg-green-200 text-center">
                 <thead>
                     <tr>
                         <th className="py-2 px-4 border-b">Type</th>
@@ -120,7 +123,7 @@ const RequestStatus = () => {
                                     </div>
                                 )}
                                 </td>
-                            <td className={`py-2 px-4 border-b ${statusColor(request.status)}`}>
+                            <td className={`py-2 px-4 border-b font-bold ${statusColor(request.status)}`}>
                                 {request.status}
                             </td>
 

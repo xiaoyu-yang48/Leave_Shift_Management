@@ -27,15 +27,15 @@ const WorkHome = () => {
         }
     }, [user]);
 
-    // // frontend test only
-    // useEffect(() => {
-    //     setSchedule([
-    //         { id: 1, date: '2023-10-01', type: 'Morning' },
-    //         { id: 2, date: '2023-10-02', type: 'Afternoon' },
-    //         { id: 3, date: '2023-10-03', type: 'Afternoon' },
-    //     ]);
-    //     setLoading(false);
-    // }, []);
+    // frontend test only
+    useEffect(() => {
+        setSchedule([
+            { id: 1, date: '2023-10-01', type: 'Morning' },
+            { id: 2, date: '2023-10-02', type: 'Afternoon' },
+            { id: 3, date: '2023-10-03', type: 'Afternoon' },
+        ]);
+        setLoading(false);
+    }, []);
 
     return (
         <>
