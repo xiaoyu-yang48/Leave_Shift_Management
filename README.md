@@ -33,10 +33,10 @@ A full-stack app aiming to manage employee shift schedule and requests in leaves
 - **Schedule Publish**: Publish shift schedule to employees
 - **Request Review**: Review employee requests and take actions
 
+
 ---
 
 **Backend Setup**
-```bash
 cd backend
 npm install
 cp .env
