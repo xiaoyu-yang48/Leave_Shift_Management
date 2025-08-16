@@ -1,0 +1,4 @@
+Server running on port 5001
+MongoDB connection error: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017
+Attempting to use in-memory MongoDB as fallback...
+In-memory MongoDB connected successfully
