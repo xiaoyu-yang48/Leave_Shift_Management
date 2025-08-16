@@ -53,7 +53,7 @@ npm start
 ---
 
 **Access App**
-- **Live URL**: http://54.66.59.106/5001
+- **Live URL**: http://54.66.59.106:5001
 - **Local Frontend**: http://localhost:3000 
 - **Local Backend**: http://localhost:5000
 
