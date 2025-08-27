@@ -53,16 +53,16 @@ const Availability = () => {
        if (user) fetchAvailability();
     }, [user, year, monthZero]);
 
-    useEffect(() => {
-    const overrides = new Map(availability.map(item => [item.date, item.available]));
-    const nextRows = [];
-    for (let day = 1; day <= daysInMonth; day++) {
-        const date = fmt(year, monthZero, day);
-        const available = overrides.get(date) ?? true; // Default to true if not overridden
-        nextRows.push({ date, available });
-    }
-    setRows(nextRows);
-    }, [year, monthZero, availability, daysInMonth]);
+    // useEffect(() => {
+    // const overrides = new Map(availability.map(item => [item.date, item.available]));
+    // const nextRows = [];
+    // for (let day = 1; day <= daysInMonth; day++) {
+    //     const date = fmt(year, monthZero, day);
+    //     const available = overrides.get(date) ?? true; // Default to true if not overridden
+    //     nextRows.push({ date, available });
+    // }
+    // setRows(nextRows);
+    // }, [year, monthZero, availability, daysInMonth]);
 
     const toggleAvailability = (date) => {
         setRows(prevRows =>
