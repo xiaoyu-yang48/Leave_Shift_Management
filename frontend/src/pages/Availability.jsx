@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, use} from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 
@@ -36,12 +36,6 @@ const Availability = () => {
                 });
                 setAvailability(response.data);
                 
-                // // frontend test only
-                // setAvailability([
-                //     { date: fmt(year, monthZero, 10), available: true },
-                //     { date: fmt(year, monthZero, 17), available: false },
-                //     { date: fmt(year, monthZero, 25), available: true },
-                // ]);
             } catch (error) {
                 console.error('Error fetching availability:', error);
                 alert('Failed to load availability. Please try again later.');
@@ -53,6 +47,16 @@ const Availability = () => {
        if (user) fetchAvailability();
     }, [user, year, monthZero]);
 
+    
+    // // frontend test only
+    // useEffect(() => {
+    //         setAvailability([
+    //             { date: fmt(year, monthZero, 10), available: true },
+    //             { date: fmt(year, monthZero, 17), available: false },
+    //             { date: fmt(year, monthZero, 25), available: true },
+    //         ])
+    //         setLoading(false);
+    //     }, [year, monthZero]);
     // useEffect(() => {
     // const overrides = new Map(availability.map(item => [item.date, item.available]));
     // const nextRows = [];
@@ -63,6 +67,8 @@ const Availability = () => {
     // }
     // setRows(nextRows);
     // }, [year, monthZero, availability, daysInMonth]);
+
+
 
     const toggleAvailability = (date) => {
         setRows(prevRows =>
