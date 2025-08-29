@@ -10,32 +10,32 @@ const WorkHome = () => {
     const [schedule, setSchedule] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchSchedule = async () => {
-            try {
-                const response = await axiosInstance.get('/api/schedule/me');
-                setSchedule(response.data);
-            } catch (error) {
-                console.error('Error fetching schedule:', error);
-                alert('Failed to load schedule. Please try again later.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        if (user){
-            fetchSchedule();
-        }
-    }, [user]);
-
-    // // frontend test only
     // useEffect(() => {
-    //     setSchedule([
-    //         { id: 1, date: '2023-10-01', type: 'Morning' },
-    //         { id: 2, date: '2023-10-02', type: 'Afternoon' },
-    //         { id: 3, date: '2023-10-03', type: 'Afternoon' },
-    //     ]);
-    //     setLoading(false);
-    // }, []);
+    //     const fetchSchedule = async () => {
+    //         try {
+    //             const response = await axiosInstance.get('/api/schedule/me');
+    //             setSchedule(response.data);
+    //         } catch (error) {
+    //             console.error('Error fetching schedule:', error);
+    //             alert('Failed to load schedule. Please try again later.');
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     if (user){
+    //         fetchSchedule();
+    //     }
+    // }, [user]);
+
+    // frontend test only
+    useEffect(() => {
+        setSchedule([
+            { id: 1, date: '2023-10-01', type: 'Morning' },
+            { id: 2, date: '2023-10-02', type: 'Afternoon' },
+            { id: 3, date: '2023-10-03', type: 'Afternoon' },
+        ]);
+        setLoading(false);
+    }, []);
 
     return (
         <>
